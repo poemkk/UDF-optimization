@@ -1,6 +1,6 @@
 SET NOCOUNT ON;
 
--- 1. 创建临时表存储测试数据
+-- 1. Создание временных таблиц для тестовых данных
 IF OBJECT_ID('tempdb..#EmployeeData') IS NOT NULL DROP TABLE #EmployeeData;
 IF OBJECT_ID('tempdb..#WorkStatusData') IS NOT NULL DROP TABLE #WorkStatusData;
 IF OBJECT_ID('tempdb..#AnalizData') IS NOT NULL DROP TABLE #AnalizData;
@@ -11,7 +11,7 @@ IF OBJECT_ID('tempdb..#PrintTemplateData') IS NOT NULL DROP TABLE #PrintTemplate
 IF OBJECT_ID('tempdb..#WorksData') IS NOT NULL DROP TABLE #WorksData;
 IF OBJECT_ID('tempdb..#WorkItemData') IS NOT NULL DROP TABLE #WorkItemData;
 
--- 2. 生成基础表数据
+-- 2. Генерация базовых данных
 CREATE TABLE #EmployeeData (
     Id_Employee INT IDENTITY(1,1),
     Login_Name VARCHAR(50),
@@ -183,7 +183,7 @@ CROSS APPLY (
     FROM sys.objects
 ) AS items;
 
--- 3. 插入测试数据到实际表
+-- 3. Вставка тестовых данных в реальные таблицы
 BEGIN TRANSACTION;
 
 INSERT INTO Employee (Login_Name, Name, Patronymic, Surname, Email, Post, CreateDate, Archived, IS_Role, Role)
@@ -230,7 +230,7 @@ FROM #WorkItemData;
 
 COMMIT TRANSACTION;
 
--- 4. 验证生成的数据
+-- 4. Проверка сгенерированных данных
 SELECT 'Employee Count' AS TableName, COUNT(*) AS RecordCount FROM Employee;
 SELECT 'WorkStatus Count' AS TableName, COUNT(*) AS RecordCount FROM WorkStatus;
 SELECT 'Analiz Count' AS TableName, COUNT(*) AS RecordCount FROM Analiz;
@@ -241,12 +241,12 @@ SELECT 'PrintTemplate Count' AS TableName, COUNT(*) AS RecordCount FROM PrintTem
 SELECT 'Works Count' AS TableName, COUNT(*) AS RecordCount FROM Works;
 SELECT 'WorkItem Count' AS TableName, COUNT(*) AS RecordCount FROM WorkItem;
 
--- 5. 测试优化后的 F_WORKS_LIST 函数
+-- 5. Тестирование функции F_WORKS_LIST
 DECLARE @StartTime DATETIME = GETDATE();
 SELECT * FROM dbo.F_WORKS_LIST(3000, 1);
 SELECT DATEDIFF(MILLISECOND, @StartTime, GETDATE()) AS ExecutionTime_MS;
 
--- 6. 清理脚本（谨慎使用）
+-- 6. Скрипт очистки (использовать с осторожностью)
 /*
 BEGIN TRANSACTION;
 DELETE FROM WorkItem;
